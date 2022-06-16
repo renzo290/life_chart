@@ -1,0 +1,66 @@
+#Paquetes
+
+#install.packages("waffle")
+#install.packages("hrbrthemes")
+#install.packages("extrafont")
+
+remotes::install_github("hrbrmstr/waffle")
+library(waffle)
+## Loading required package: ggplot2
+
+?geom_waffle
+
+library(tidyverse)
+library(ggplot2)
+library(lubridate)
+library(waffle)
+library(hrbrthemes)
+library(extrafont)
+loadfonts(device = "win", quiet = TRUE)
+
+## Creando los datos
+
+life_data <- tibble(months = factor(rep(month.abb[1:12], 41), levels=month.abb[1:12])) %>%   ## make months 
+  tibble(age = rep(0:40, each = 12)) ## age range: 1-40
+
+life_data <- life_data[-1,] %>% 
+  rowid_to_column("row_name")  ## add column for row number
+
+
+## Agregar las distintas "eras" para pintar en el waffle chart
+
+life_data <- life_data %>%
+  mutate(era = fct_inorder(case_when(row_name < 72  ~ "Infancia en C. Casares",
+                                     row_name < 180 ~ "Escuela primaria C. Casares",
+                                     row_name < 215 ~ "Escuela secundaria C. Casares",
+                                     row_name < 287 ~ "Economía en UNLP, La Plata",
+                                     row_name < 299 ~ "Deloitte, CABA",
+                                     row_name < 389 ~ "Sector público, CABA",
+                                     row_name < 350 ~ "Pol. Públicas en San Andres, CABA", #AJUSTAR ESTO.
+                                     row_name < ((year(Sys.Date()) - 1990)*12) + (month(Sys.Date()) - 1) ~ "CABA", ## months into "Adulting - US" based on current month
+                                     TRUE ~ "Time left")))
+
+
+#ACTUALIZAR A PARTIR DE ACÁ
+
+# Waffle chart-----
+life_in_months <- life_data %>%
+  count(era) %>% ## the count of each era is the number of months in that era
+  ggplot(aes(fill = era, values = n)) +
+  geom_waffle(color = "#F7F7F7", n_rows = 12, size = 1, flip = TRUE) + ## make each row a year/12 months
+  scale_fill_manual(name = "", values = c("#EF476F","#FCA311","#FFD166","#0EAD69","#4ECDC4","#118AB2")) +  ## assign colors to the eras
+  coord_equal() +
+  theme_ipsum(grid = "") +
+  theme(legend.text = element_text(family = "Cooper Lt BT", size = 40),
+        plot.background = element_rect(fill = "#F7F7F7", color = "#F7F7F7")) +
+  theme_enhance_waffle()
+
+life_in_months
+
+?waffle
+
+# Save the chart
+life_in_months + ggsave("life_in_months.png", device = "png", type = "cairo", width = 15, height = 25, dpi = 300)
+
+
+
