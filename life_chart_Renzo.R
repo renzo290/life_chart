@@ -29,8 +29,7 @@ life_data <- life_data %>% rowid_to_column("row_name") # Columna con el numero d
 ## Agregar las distintas "eras" para pintar en el waffle chart
 
 life_data <- life_data %>%
-  mutate(era = fct_inorder(case_when(row_name < 73  ~ "Infancia C. Casares",
-                                     row_name < 181 ~ "Primaria C. Casares",
+  mutate(era = fct_inorder(case_when(row_name < 181 ~ "Infancia en C. Casares",
                                      row_name < 217 ~ "Secundaria C. Casares",
                                      row_name < 289 ~ "Economía, UNLP",
                                      row_name < 307 ~ "Sector privado, CABA",
@@ -51,7 +50,7 @@ ggplot(life_in_months, aes(fill = era, values = freq))+
   
 ggplot(life_in_months, aes(fill = era, values = freq))+
   geom_waffle(color = "#FFFFFF", n_rows = 12, size = 1, flip = F) + #Cada columna tiene 12 cuadrados que representan los meses
-  scale_fill_manual(name = "", values = c("#75F500","#35DB75","#2C5C00","#E0E80C","#EB7F0A","#498BF5","#00235C","#498BF5", "#EAEAE4")) +  ## assign colors to the eras
+  scale_fill_manual(name = "", values = c("#35DB75","#2C5C00","#E0E80C","#EB7F0A","#498BF5","#00235C","#498BF5", "#EAEAE4")) +  ## assign colors to the eras
   coord_equal() +
   theme_ipsum(grid = "#FFFFFF") +
   theme(legend.text = element_text(family = "Cooper Lt BT", size = 8),
