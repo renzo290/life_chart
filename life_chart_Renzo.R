@@ -31,12 +31,12 @@ life_data <- life_data %>% rowid_to_column("row_name") # Columna con el numero d
 life_data <- life_data %>%
   mutate(era = fct_inorder(case_when(row_name < 181 ~ "Infancia en C. Casares",
                                      row_name < 217 ~ "Secundaria C. Casares",
-                                     row_name < 289 ~ "EconomÃ­a, UNLP",
+                                     row_name < 289 ~ "Economía, UNLP",
                                      row_name < 307 ~ "Sector privado, CABA",
-                                     row_name < 331 ~ "Sector pÃºblico, CABA",
-                                     row_name < 355 ~ "Pol. PÃºbicas, San AndrÃ©s, Sector pÃºblico",
-                                     row_name < 391 ~ "Sector pÃºblico, CABA ",
-                                     row_name < 493 ~ "Tiempo restante hasta 40 aÃ±os")))
+                                     row_name < 331 ~ "Sector público, CABA",
+                                     row_name < 355 ~ "Pol. Púbicas, San Andrés, Sector público",
+                                     row_name < 391 ~ "Sector público, CABA ",
+                                     row_name < 493 ~ "Tiempo restante hasta 40 años")))
                                      
 ## Waffle chart basico
 
@@ -58,8 +58,21 @@ ggplot(life_in_months, aes(fill = era, values = freq))+
   theme(axis.text.y = element_blank()) +
   theme(plot.background = element_rect(fill = "#FFFFFF")) +
   ggtitle("Life Chart Renzo Falciglia",
-          subtitle = "Cada cuadrado representa un mes de mi vida y cada columna un aÃ±o")
+          subtitle = "Cada cuadrado representa un mes de mi vida y cada columna un año")
+
+## Waffle chart sin título ni subtítulo
+
+ggplot(life_in_months, aes(fill = era, values = freq))+
+  geom_waffle(color = "#FFFFFF", n_rows = 12, size = 1, flip = F) + #Cada columna tiene 12 cuadrados que representan los meses
+  scale_fill_manual(name = "", values = c("#35DB75","#2C5C00","#E0E80C","#EB7F0A","#498BF5","#00235C","#498BF5", "#EAEAE4")) +  ## assign colors to the eras
+  coord_equal() +
+  theme_ipsum(grid = "#FFFFFF") +
+  theme(legend.text = element_text(family = "Cooper Lt BT", size = 8),
+        plot.background = element_rect(fill = "#F7F7F7", color = "#F7F7F7")) +
+  theme(axis.text.y = element_blank()) +
+  theme(plot.background = element_rect(fill = "#FFFFFF"))
+
 
 # Save the chart
-ggsave("life_chart_renzo.png", device = "png", width = 12, height = 4, dpi = 150)
+ggsave("life_chart_renzo_2.png", device = "png", width = 15, height = 6, dpi = 300)
 
